@@ -1,3 +1,106 @@
+	
+
+	baseDay = new Date( '2018-09-28 00:00:01.000' );
+	baseDuty = 19-1;
+
+	var nameList= new Array(
+        '陈睿哲','陈卓然','黄喆' ,'姜皓旻', '林致远', '吕恺烨', '马天昊', '钱君垚', '邱颢涵','史立潇',
+		'王嘉诚','徐澍','徐煜扬',	'薛嘉霖','俞希铖', '喻子文',	'张宸玮','张天成','赵彦杰',	'朱奕瀚',
+		'宗逸宸','崔墨含','范琳希','冯艺衡','胡默', '黄语琦',  '季子乔','姜是艺', '钱馨颐',	'沈侞逸',
+		'石欣睿','王寻文','吴诗愉','郤乙文','谢洛灵','许清馨',	'杨可薇','叶欣瑶', '余沁芝',	'张庭溪',
+		'郑好',	'钟睿琦' );
+
+	/**     * 周六周天 自己计算     
+	* 大放假或者调休     
+	* 2月4日至10 4月5日至7 4月29日至5月1日	 
+	* @type {Array}     */
+	bigWeekDay = ['20180101', '20180215', '20180216', '20180217', '20180218', 
+					'20180219', '20180220', '20180221', '20180405', '20180406', 
+					'20180407', '20180429', '20180430', '20180501', '20180618', 
+					'20180924', '20181001', '20181002', '20181003', '20181004', 
+					'20181005', '20181006', '20181007', '20181231', '20190101', 
+					'20190204', '20190205', '20190206', '20190207', '20190208', 
+					'20190209', '20190210', '20190405', '20190406', '20190407', 
+					'20190429', '20190430', '20190501', '20190617', '20190913',	
+					'20191001', '20191002', '20191003', '20191004', '20191005', 
+					'20191006', '20191007'	]; 	
+	/**     * 2月11日(星期日)、2月24  4月8日(星期日)上班 4月28日(星期六)上  9月29日(星期六)、9月30	 
+	* @type {[string]}	 */	
+	tiaoxiu    = ['20180211', '20180224', '20180408', '20180428', '20180929', 
+					'20180930', '20181229','20190202', '20190203', '20190427', 
+					'20190428'   ];  
+
+	/**     *	 
+	* @param timeStamp  输入一个时间对象， 判断该天是否为工作日	 
+	* @returns {boolean}  false 休息   true 工作	 */    
+	function isWorkday(timeStamp='') 
+	{    	
+		//console.log(timeStamp);        
+		if ( timeStamp == 'undefine' || timeStamp == '') 
+		{        	
+			timeStamp = new Date();        
+		}         
+
+		var isWeek = timeStamp.getDay(); //0 周日  6周六 	    
+		var y = timeStamp.getFullYear();	    
+		var m = timeStamp.getMonth()+1;	    
+		m = m < 10 ? '0' + m : '' + m;	    
+		var d = timeStamp.getDate() <10 ? '0'+timeStamp.getDate():''+timeStamp.getDate(); 	   
+		var ymd = y+m+d; 	    
+		//判断是否为调休日 必定是工作日	   
+		if (tiaoxiu.indexOf(ymd) > -1) 
+		{		    
+			return true;	    
+		}        
+		//判断是否为假期 必定休息        
+		if (bigWeekDay.indexOf(ymd) > -1) 
+		{        	
+			return false;        
+		}        
+		//判断是否为周六周天        
+		if (isWeek == 0 || isWeek == 6) 
+		{	    	
+			return false        
+		}      
+
+		return true;    
+	}
+
+
+	function diffworkday( d )
+	{
+		//console.log( d ); 
+		var count =0, dTime = d.getTime();
+		for( var i= baseDay.getTime(); i<=dTime; i += 1000*24*60*60 ) {
+			if( isWorkday( new Date(i) ) ) {
+				count++;
+			}
+		}
+		return count-1;
+	}
+
+	function getDutyList( today )
+	{
+		var diff = diffworkday( today );
+		var todayText = isWorkday(today)? "当日："+ nameList[ (baseDuty+diff*4)%nameList.length ]
+									+ ","	+ nameList[ (baseDuty+diff*4+1)%nameList.length ]
+									+ ","	+ nameList[ (baseDuty+diff*4+2)%nameList.length ]
+									+ ","	+ nameList[ (baseDuty+diff*4+3)%nameList.length ] 
+									: "";
+		var nextday = today;
+		do{
+			nextday = new Date( nextday.getTime()+1000*24*60*60);
+		}while( !isWorkday( nextday ) ) 
+
+		var diff = diffworkday( nextday );
+		var nextdatText = "  次日："+ nameList[ (baseDuty+diff*4)%nameList.length ]
+						+ ","	+ nameList[ (baseDuty+diff*4+1)%nameList.length ]
+						+ ","	+ nameList[ (baseDuty+diff*4+2)%nameList.length ]
+						+ ","	+ nameList[ (baseDuty+diff*4+3)%nameList.length ];
+
+		return todayText + nextdatText;
+	}
+
 var router = require('express').Router();
 // 引用 wechat 库，详细请查看 https://github.com/node-webot/wechat
 var wechat = require('wechat');
@@ -20,24 +123,16 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
   // MsgType: 'text',
   // Content: 'http',
   // MsgId: '5837397576500011341' }
-  var keyArray = ['你好', '约吗'];
+  var keyArray = ['值日生', '值日'];
   var content = message.Content;
   var keyIndex = keyArray.indexOf(content);
   switch (keyIndex) {
     case 0:
-      {
-        res.reply({
-          type: "text",
-          content: '您好，大家好才是真的好！'
-        });
-
-      }
-      break;
     case 1:
       {
         res.reply({
           type: "text",
-          content: '不约，不约，叔叔我们不约！'
+          content: getDutyList( new Date())
         });
 
       }
@@ -45,7 +140,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
     default:
       res.reply({
         type: "text",
-        content: '服务器挂掉了，你的要求暂时无法满足……'
+        content: '除了值日生，我啥也不知道。。。'
       });
       break;
   }
