@@ -1,4 +1,4 @@
-	
+
 	baseDay = new Date( '2018-09-25 00:00:01.000' );
 	baseDuty = 7-1;
 	baseGuard = 26-1;
@@ -91,7 +91,7 @@
 			count++;
 		}while( !isWorkday( currday ) || currday <= d );
 
-		console.log( currday ); 
+		//console.log( currday ); 
 
 		return guardText = "\n下次护校："
 						+ (currday.getMonth()+1) + "月" + currday.getDate() + "日 "
@@ -112,21 +112,19 @@
 									: "";
 
 		var nextday = today;
-		var skipflag = 0;
 		do{
 			nextday = new Date( nextday.getTime()+ONEDAY);
-			skipflag++;
 		}while( !isWorkday( nextday ) ) 
 
 		var diff = diffworkday( nextday );
-		var nextdatText = "\n"+ ((skipflag==1)?"次日：":"下周：")
+		var nextdayText =  (isWorkday(today)?"\n次日：":"下周：")
 						+ ((baseDuty+diff*4)%nameList.length+1) + "~"
 						+ ((baseDuty+diff*4+3)%nameList.length+1) + " "		
 						+ nameList[ (baseDuty+diff*4)%nameList.length ]
 						+ ","	+ nameList[ (baseDuty+diff*4+1)%nameList.length ]
 						+ ","	+ nameList[ (baseDuty+diff*4+2)%nameList.length ]
 						+ ","	+ nameList[ (baseDuty+diff*4+3)%nameList.length ];
-		return todayText + nextdatText + getGuardText(today);
+		return todayText + nextdayText + getGuardText(today);
 	}
 
 var router = require('express').Router();
