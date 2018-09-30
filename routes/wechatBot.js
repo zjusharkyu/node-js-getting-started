@@ -1,7 +1,12 @@
-
-	baseDay = new Date( '2018-09-25 00:00:01.000' );
-	baseDuty = 7-1;
+	// 值日生标尺
+	baseDay   = new Date( '2018-09-25 00:00:01.000' );
+	baseDuty  = 7-1;
 	baseGuard = 26-1;
+
+	// 2018年上半学期
+	firstDay = new Date( '2018-09-03 00:00:01.000' );
+	lastDay  = new Date( '2019-01-18 00:00:01.000' );	
+	
 	ONEDAY = 1000*24*60*60;
 
 	var nameList= new Array(
@@ -99,6 +104,26 @@
 						+ nameList[ (baseGuard+count)%nameList.length ] + ")";			
 	}
 
+	function getCountDown( d )
+	{
+		//console.logDate() 
+		var totalCnt = 0, pastCnt = 0;
+		var currday = firstDay;
+		do{
+			currday = new Date( currday.getTime()+7*ONEDAY ); 
+			totalCnt++;
+			if( currday < d ) {
+				pastCnt++;
+			}
+		}while( currday <= lastDay );
+
+		return countdownText = "本学期共有" + totalCnt+ "周，已过了"
+						+ pastCnt + "周(" + (pastCnt/totalCnt*100) + "%)，"
+						+ "再坚持" + (totalCnt-pastCnt) + "周("
+						+ (totalCnt-pastCnt)/totalCnt*100 
+						+ "%)到1月23日就放寒假喽！";			
+	}
+
 	function getDutyList( today )
 	{
 		var diff = diffworkday( today );
@@ -149,7 +174,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
   // MsgType: 'text',
   // Content: 'http',
   // MsgId: '5837397576500011341' }
-  var keyArray = ['值日生', '值日'];
+  var keyArray = ['值日生', '值日','倒计时'];
   var content = message.Content;
   var keyIndex = keyArray.indexOf(content);
   switch (keyIndex) {
@@ -163,10 +188,18 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
 
       }
       break;
+    case 2:
+      {
+        res.reply({
+          type: "text",
+          content: getCountDown( new Date())
+        });
+      }
+      break;		  
     default:
       res.reply({
         type: "text",
-        content: '除了值日生，我啥也不知道。。。'
+        content: '试试输入\'值日\'、\'倒计时\'....'
       });
       break;
   }
