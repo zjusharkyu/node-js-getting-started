@@ -1,5 +1,5 @@
 	// 值日生标尺
-	baseDay   = new Date( '2018-09-25 00:00:01.000' );
+	baseDay   = new Date( '2018-09-25 00:00:00.000' );
 	baseDuty  = 7-1;
 	baseGuard = 26-1;
 
@@ -15,6 +15,10 @@
 		'宗逸宸','崔墨含','范琳希','冯艺衡','胡默', '黄语琦',  '季子乔','姜是艺', '钱馨颐',	'沈侞逸',
 		'石欣睿','王寻文','吴诗愉','郤乙文','谢洛灵','许清馨',	'杨可薇','叶欣瑶', '余沁芝',	'张庭溪',
 		'郑好',	'钟睿琦' );
+
+	var classList= new Array(
+        '周一：自然','周二：美术、校本','周三：体育、唱游、道德',
+        '周四：美术、道德、体育、兴趣','周五：自然、唱游、体育' );	
 
 	/**     
 	* 周六周天 自己计算     
@@ -40,7 +44,7 @@
 	/**  
 	* @param timeStamp  输入一个时间对象， 判断该天是否为工作日	 
 	* @returns {boolean}  false 休息   true 工作	 */    
-	function isWorkday(timeStamp='') 
+	function isWorkday(timeStamp='', incFri = true ) 
 	{    	
 		//console.log(timeStamp);        
 		if ( timeStamp == 'undefine' || timeStamp == '') 
@@ -65,7 +69,7 @@
 			return false;        
 		}        
 		//判断是否为周五、周六、周天        
-		if (isWeek == 0 || isWeek == 6 || isWeek == 5) 
+		if (isWeek == 0 || isWeek == 6 || (incFri && isWeek == 5) ) 
 		{	    	
 			return false        
 		}      
@@ -104,6 +108,19 @@
 						+ nameList[ (baseGuard+count)%nameList.length ] + ")";			
 	}
 
+	function getClassText( d )
+	{
+		//console.logDate() 
+		var currday = d;
+		do{
+			currday = new Date( currday.getTime()+ONEDAY ); 
+		}while( !isWorkday( currday, false ) );
+
+		//console.log( currday ); 
+
+		return "\n下日" + classList[ currday.getDay()-1 ] ;			
+	}
+
 	function getCountDown( d )
 	{
 		//console.logDate() 
@@ -117,11 +134,40 @@
 			}
 		}while( currday <= lastDay );
 
-		return countdownText = "本学期共有" + totalCnt+ "周，已过了"
+		return  "本学期共有" + totalCnt+ "周，已过了"
 						+ pastCnt + "周(" + (pastCnt/totalCnt*100) + "%)，"
 						+ "再坚持" + (totalCnt-pastCnt) + "周("
 						+ (totalCnt-pastCnt)/totalCnt*100 
 						+ "%)到1月23日就放寒假喽！";			
+	}
+
+	function nextDuty( id, today )
+	{
+		//console.logDate() 
+		var currid  = baseDuty;
+		var currday = baseDay;
+		var count   = 0;
+		var rid     = id-1;
+		for( ; currday.getTime()+ONEDAY <= today.getTime(); currid+=4 )
+		{
+			do{
+				currday = new Date( currday.getTime() + ONEDAY );
+			} while( !isWorkday( currday) );
+		} 
+		//console.log( "1:"+currday + "  " + currid ); 
+
+		for( ; rid!=(currid)%nameList.length && 
+				rid!=(currid+1)%nameList.length &&
+				rid!=(currid+2)%nameList.length &&
+				rid!=(currid+3)%nameList.length ; currid+=4 ) {
+			do{
+				currday = new Date( currday.getTime() + ONEDAY );
+			} while( !isWorkday( currday) );
+		}	
+		//console.log( "2:"+currday + "  " + currid ); 
+
+		return id+"号下次值日时间"+(currday.getMonth()+1)+"月"+
+								currday.getDate()+"日(周"+currday.getDay()+")";			
 	}
 
 	function getDutyList( today )
@@ -152,6 +198,34 @@
 		return todayText + nextdayText + getGuardText(today);
 	}
 
+	function inputType( content )
+	{  
+		// 先判断是否是学号
+		if( new RegExp("^[0-9]*[1-9][0-9]*$").test( content ) )
+		{
+			if( Number(content)<=42 ) //输入的学号
+			{
+				return nextDuty( Number(content), new Date()  );			
+			}
+		}
+		// 再判断其他命令
+		var keyArray = ['值日生', '值日', '倒计时','课程表','课程'];
+  		var keyIndex = keyArray.indexOf(content);		
+		switch (keyIndex) {
+ 			case 0:
+    		case 1:
+      			return getDutyList( new Date() );
+      		case 2:
+      			return getCountDown( new Date());
+        	case 3:
+        	case 4:
+        		return getClassText( new Date() );
+        	default:
+        		return '试试输入\'值日\'、\'倒计时\'、\'课程表\'、\'娃的学号\'....'
+      	        }			
+		
+	}
+
 var router = require('express').Router();
 // 引用 wechat 库，详细请查看 https://github.com/node-webot/wechat
 var wechat = require('wechat');
@@ -174,35 +248,11 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
   // MsgType: 'text',
   // Content: 'http',
   // MsgId: '5837397576500011341' }
-  var keyArray = ['值日生', '值日','倒计时'];
-  var content = message.Content;
-  var keyIndex = keyArray.indexOf(content);
-  switch (keyIndex) {
-    case 0:
-    case 1:
-      {
-        res.reply({
+  res.reply({
           type: "text",
-          content: getDutyList( new Date())
-        });
+          content: inputType( message.Content )
+  });
 
-      }
-      break;
-    case 2:
-      {
-        res.reply({
-          type: "text",
-          content: getCountDown( new Date())
-        });
-      }
-      break;		  
-    default:
-      res.reply({
-        type: "text",
-        content: '试试输入\'值日\'、\'倒计时\'....'
-      });
-      break;
-  }
 }).image(function(message, req, res, next) {
   // message为图片内容
   // { ToUserName: 'gh_d3e07d51b513',
