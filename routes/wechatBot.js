@@ -118,7 +118,7 @@
 
 		//console.log( currday ); 
 
-		return "\n下日" + classList[ currday.getDay()-1 ] ;			
+		return "下日" + classList[ currday.getDay()-1 ] ;			
 	}
 
 	function getCountDown( d )
@@ -166,7 +166,7 @@
 		}	
 		//console.log( "2:"+currday + "  " + currid ); 
 
-		return id+"号下次值日时间"+(currday.getMonth()+1)+"月"+
+		return id+"号下次值日"+(currday.getMonth()+1)+"月"+
 								currday.getDate()+"日(周"+currday.getDay()+")";			
 	}
 
@@ -222,9 +222,10 @@
         		return getClassText( new Date() );
         	default:
         		return '试试输入\'值日\'、\'倒计时\'、\'课程表\'、\'娃的学号\'....'
-      	        }			
+          	}			
 		
 	}
+
 
 var router = require('express').Router();
 // 引用 wechat 库，详细请查看 https://github.com/node-webot/wechat
