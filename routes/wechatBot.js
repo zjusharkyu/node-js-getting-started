@@ -1,7 +1,8 @@
 	
-
-	baseDay = new Date( '2018-09-28 00:00:01.000' );
-	baseDuty = 19-1;
+	baseDay = new Date( '2018-09-25 00:00:01.000' );
+	baseDuty = 7-1;
+	baseGuard = 26-1;
+	ONEDAY = 1000*24*60*60;
 
 	var nameList= new Array(
         '陈睿哲','陈卓然','黄喆' ,'姜皓旻', '林致远', '吕恺烨', '马天昊', '钱君垚', '邱颢涵','史立潇',
@@ -10,7 +11,8 @@
 		'石欣睿','王寻文','吴诗愉','郤乙文','谢洛灵','许清馨',	'杨可薇','叶欣瑶', '余沁芝',	'张庭溪',
 		'郑好',	'钟睿琦' );
 
-	/**     * 周六周天 自己计算     
+	/**     
+	* 周六周天 自己计算     
 	* 大放假或者调休     
 	* 2月4日至10 4月5日至7 4月29日至5月1日	 
 	* @type {Array}     */
@@ -24,13 +26,13 @@
 					'20190429', '20190430', '20190501', '20190617', '20190913',	
 					'20191001', '20191002', '20191003', '20191004', '20191005', 
 					'20191006', '20191007'	]; 	
-	/**     * 2月11日(星期日)、2月24  4月8日(星期日)上班 4月28日(星期六)上  9月29日(星期六)、9月30	 
-	* @type {[string]}	 */	
-	tiaoxiu    = ['20180211', '20180224', '20180408', '20180428', '20180929', 
-					'20180930', '20181229','20190202', '20190203', '20190427', 
-					'20190428'   ];  
+	/**     
+	 * 2月11日(星期日)、2月24  4月8日(星期日)上班 4月28日(星期六)上  9月29日(星期六)、9月30	 
+	 * @type {[string]}	 */	
+	tiaoxiu    = ['20180211', '20180224', '20180408', '20180428', '20180928','20180929',
+					'20190202', '20190203', '20190427', '20190428'   ];  
 
-	/**     *	 
+	/**  
 	* @param timeStamp  输入一个时间对象， 判断该天是否为工作日	 
 	* @returns {boolean}  false 休息   true 工作	 */    
 	function isWorkday(timeStamp='') 
@@ -57,8 +59,8 @@
 		{        	
 			return false;        
 		}        
-		//判断是否为周六周天        
-		if (isWeek == 0 || isWeek == 6) 
+		//判断是否为周五、周六、周天        
+		if (isWeek == 0 || isWeek == 6 || isWeek == 5) 
 		{	    	
 			return false        
 		}      
@@ -71,34 +73,60 @@
 	{
 		//console.log( d ); 
 		var count =0, dTime = d.getTime();
-		for( var i= baseDay.getTime(); i<=dTime; i += 1000*24*60*60 ) {
+		for( var i= baseDay.getTime()+ONEDAY; i<=dTime; i += ONEDAY ) {
 			if( isWorkday( new Date(i) ) ) {
 				count++;
 			}
 		}
-		return count-1;
+		return count;
+	}
+
+	function getGuardText( d )
+	{
+		//console.logDate() 
+		var count =0;
+		var currday = baseDay;
+		do{
+			currday = new Date( currday.getTime()+7*ONEDAY ); 
+			count++;
+		}while( !isWorkday( currday ) || currday <= d );
+
+		console.log( currday ); 
+
+		return guardText = "\n下次护校："
+						+ (currday.getMonth()+1) + "月" + currday.getDate() + "日 "
+						+ "(" + ((baseGuard+count)%nameList.length+1)
+						+ nameList[ (baseGuard+count)%nameList.length ] + ")";			
 	}
 
 	function getDutyList( today )
 	{
 		var diff = diffworkday( today );
-		var todayText = isWorkday(today)? "当日："+ nameList[ (baseDuty+diff*4)%nameList.length ]
+		var todayText = isWorkday(today)? "当日："
+									+ ((baseDuty+diff*4)%nameList.length+1) + "~"
+									+ ((baseDuty+diff*4+3)%nameList.length+1) + " "
+									+ nameList[ (baseDuty+diff*4)%nameList.length ]
 									+ ","	+ nameList[ (baseDuty+diff*4+1)%nameList.length ]
 									+ ","	+ nameList[ (baseDuty+diff*4+2)%nameList.length ]
 									+ ","	+ nameList[ (baseDuty+diff*4+3)%nameList.length ] 
 									: "";
+
 		var nextday = today;
+		var skipflag = 0;
 		do{
-			nextday = new Date( nextday.getTime()+1000*24*60*60);
+			nextday = new Date( nextday.getTime()+ONEDAY);
+			skipflag++;
 		}while( !isWorkday( nextday ) ) 
 
 		var diff = diffworkday( nextday );
-		var nextdatText = "  次日："+ nameList[ (baseDuty+diff*4)%nameList.length ]
+		var nextdatText = "\n"+ ((skipflag==1)?"次日：":"下周：")
+						+ ((baseDuty+diff*4)%nameList.length+1) + "~"
+						+ ((baseDuty+diff*4+3)%nameList.length+1) + " "		
+						+ nameList[ (baseDuty+diff*4)%nameList.length ]
 						+ ","	+ nameList[ (baseDuty+diff*4+1)%nameList.length ]
 						+ ","	+ nameList[ (baseDuty+diff*4+2)%nameList.length ]
 						+ ","	+ nameList[ (baseDuty+diff*4+3)%nameList.length ];
-
-		return todayText + nextdatText;
+		return todayText + nextdatText + getGuardText(today);
 	}
 
 var router = require('express').Router();
