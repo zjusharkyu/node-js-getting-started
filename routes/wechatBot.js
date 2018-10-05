@@ -238,13 +238,12 @@ axios.defaults.headers['Content-Type'] =
 	        });
 	}
 
-	function getDict( pinyin, idiom ) {
-		
+	function getDict( c, pinyin, idiom ) {
 	    var $ = cheerio.load( pinyin.data );
-	    var exp = ": ";
+	    var exp = c+" : 部首[ ";
 	    exp +=  //$('a[href^="/z/pyjs/"]', '#z_info').text() + " " +  //拼音
 	            $('.z_it2_jbs', '#z_info').text() +"+"+$('.z_it2_jbh', '#z_info').text()
-	                    +"="+$('.z_it2_jzbh', '#z_info').text() + "画";   //部首
+	                    +"="+$('.z_it2_jzbh', '#z_info').text() + "画 ]";   //部首
 	    var notes = [], index = 0, curr="", next="";
 	    $('.tab-page','#jb').contents().each( function(i, el) {
 	                                if( 1 == i )
@@ -266,10 +265,11 @@ axios.defaults.headers['Content-Type'] =
 	                                }
 	                            }) ;
 	    exp += "\n" + notes.join( '\n' ) ;
-	    exp += "\nhttp://test.com";
+	    exp += "\n详:http://www.zdic.net/sousuo/?tp=tp1&lb_a=hp&q="+c;
 
 	    $ = cheerio.load( idiom.data );
 	    exp += "\n成语："+$('a[href$=".htm#cy"]','#content').contents().not('span').slice(0,5).text();
+	    exp += "\n详:http://www.zdic.net/sousuo/?tp=tp4&lb_c=mh&q=?"+c+"?";
 	    return exp;    
 	}
 
@@ -297,9 +297,10 @@ axios.defaults.headers['Content-Type'] =
         		return getClassText( new Date() );
         	default:
        			return '试试输入\'值日\'、\'倒计时\'、\'课程表\'、娃的学号 或者汉字....'
-                }			
+      	       }			
 		
 	}
+
 
 var router = require('express').Router();
 // 引用 wechat 库，详细请查看 https://github.com/node-webot/wechat
@@ -329,7 +330,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
 		 .then( ([pinyin , idiom]) => {  
                        res.reply({
                             type: "text",
-                            content: getDict( pinyin, idiom )
+                            content: getDict( essage.Content, pinyin, idiom )
                        });
 	          });
     }
