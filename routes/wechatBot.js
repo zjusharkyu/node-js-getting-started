@@ -330,7 +330,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
 		 .then( ([pinyin , idiom]) => {  
                        res.reply({
                             type: "text",
-                            content: getDict( essage.Content, pinyin, idiom )
+                            content: getDict( message.Content, pinyin, idiom )
                        });
 	          });
     }
