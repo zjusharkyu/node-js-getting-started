@@ -326,11 +326,12 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
     if (/^[\u4e00-\u9fa5]+$/.test(message.Content) && (1==message.Content.length) ) 
     {
          Promise.all([ getPinYin( message.Content ), getIdiom( message.Content ) ])
-		 .then(([pinyin , idiom]) => {  
-                      res.reply({
+		 .then( ([pinyin , idiom]) => {  
+                       res.reply({
                             type: "text",
                             content: getDict( pinyin, idiom )
                        });
+	          });
     }
     else {
        res.reply({
