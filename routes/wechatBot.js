@@ -1,6 +1,5 @@
 const cheerio = require('cheerio');
 const axios = require('axios');
-const fs = require('fs');
 
 axios.defaults.baseURL = "http://www.zdic.net";
 axios.defaults.headers['Content-Type'] = 
@@ -330,16 +329,15 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
 		 .then(([pinyin , idiom]) => {  
                       res.reply({
                             type: "text",
-                            content: getDict( pinyin, idiom ) ;
+                            content: getDict( pinyin, idiom )
                        });
     }
     else {
        res.reply({
           type: "text",
           content: inputType( message.Content )
+       });
     }
-   });
-
 }).image(function(message, req, res, next) {
   // message为图片内容
   // { ToUserName: 'gh_d3e07d51b513',
