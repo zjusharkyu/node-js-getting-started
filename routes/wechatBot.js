@@ -1,4 +1,12 @@
-	// 值日生标尺
+const cheerio = require('cheerio');
+const axios = require('axios');
+const fs = require('fs');
+
+axios.defaults.baseURL = "http://www.zdic.net";
+axios.defaults.headers['Content-Type'] = 
+    'application/x-www-form-urlencoded; charset=UTF-8';
+
+    // 值日生标尺
 	baseDay   = new Date( '2018-09-25 00:00:00.000' );
 	baseDuty  = 7-1;
 	baseGuard = 26-1;
@@ -198,6 +206,74 @@
 		return todayText + nextdayText + getGuardText(today);
 	}
 
+	
+	function getPinYin( c )
+	{
+	    return axios( {
+	            method: 'post',
+	            url: 'http://www.zdic.net/sousuo/',
+	            headers: {
+	                'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8'
+	            },
+	            params: {
+	                tp: 'tp1',
+	                lb_a: 'hp',
+	                q:  c 
+	            } 
+	        });
+	}
+
+	function getIdiom( c )
+	{
+	    return axios( {
+	            method: 'post',
+	            url: 'http://www.zdic.net/sousuo/',
+	            headers: {
+	                'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8'
+	            },
+	            params: {
+	                tp: 'tp4',
+	                lb_c: 'mh',
+	                q:  '?'+c+'?'
+	            } 
+	        });
+	}
+
+	function getDict( pinyin, idiom ) {
+		
+	    var $ = cheerio.load( pinyin.data );
+	    var exp = ": ";
+	    exp +=  //$('a[href^="/z/pyjs/"]', '#z_info').text() + " " +  //拼音
+	            $('.z_it2_jbs', '#z_info').text() +"+"+$('.z_it2_jbh', '#z_info').text()
+	                    +"="+$('.z_it2_jzbh', '#z_info').text() + "画";   //部首
+	    var notes = [], index = 0, curr="", next="";
+	    $('.tab-page','#jb').contents().each( function(i, el) {
+	                                if( 1 == i )
+	                                {
+	                                    curr = $(this).attr('class');
+	                                    next = 'zdct' + (parseInt( curr.substring(4) )+1)%10;   
+	                                    //console.log( curr+ " " + next);
+	                                }
+	                                if( i>1 && $(this).attr('class') == curr )
+	                                {
+	                                    if( $(this).text().indexOf("其它字义")==-1 &&
+	                                        $(this).text().indexOf("基本字义")==-1 &&
+	                                        $(this).text().indexOf("●")==-1) {
+	                                            notes[ index++ ] = $(this).text();
+	                                        }
+	                                }
+	                                else if( $(this).attr('class') == next )  {
+	                                    return false;
+	                                }
+	                            }) ;
+	    exp += "\n" + notes.join( '\n' ) ;
+	    exp += "\nhttp://test.com";
+
+	    $ = cheerio.load( idiom.data );
+	    exp += "\n成语："+$('a[href$=".htm#cy"]','#content').contents().not('span').slice(0,5).text();
+	    return exp;    
+	}
+
 	function inputType( content )
 	{  
 		// 先判断是否是学号
@@ -212,7 +288,7 @@
 		var keyArray = ['值日生', '值日', '倒计时','课程表','课程'];
   		var keyIndex = keyArray.indexOf(content);		
 		switch (keyIndex) {
- 			case 0:
+			case 0:
     		case 1:
       			return getDutyList( new Date() );
       		case 2:
@@ -221,11 +297,10 @@
         	case 4:
         		return getClassText( new Date() );
         	default:
-        		return '试试输入\'值日\'、\'倒计时\'、\'课程表\'、\'娃的学号\'....'
-          	}			
+       			return '试试输入\'值日\'、\'倒计时\'、\'课程表\'、娃的学号 或者汉字....'
+                }			
 		
 	}
-
 
 var router = require('express').Router();
 // 引用 wechat 库，详细请查看 https://github.com/node-webot/wechat
@@ -249,10 +324,21 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
   // MsgType: 'text',
   // Content: 'http',
   // MsgId: '5837397576500011341' }
-  res.reply({
+    if (/^[\u4e00-\u9fa5]+$/.test(message.Content) && (1==message.Content.length) ) 
+    {
+         Promise.all([ getPinYin( message.Content ), getIdiom( message.Content ) ])
+		 .then(([pinyin , idiom]) => {  
+                      res.reply({
+                            type: "text",
+                            content: getDict( pinyin, idiom ) ;
+                       });
+    }
+    else {
+       res.reply({
           type: "text",
           content: inputType( message.Content )
-  });
+    }
+   });
 
 }).image(function(message, req, res, next) {
   // message为图片内容
