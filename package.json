@@ -17,8 +17,8 @@
     "leancloud-storage": "^3.0.0",
     "leanengine": "^3.0.0",
     "wechat": "^2.0.3",
-    "wechat-api": "^1.24.0"  
-    "cheerio": "^1.0.0"
+    "wechat-api": "^1.24.0",  
+    "cheerio": "^1.0.0",
     "axios": "^0.18.0"
   },
   "devDependencies": {
