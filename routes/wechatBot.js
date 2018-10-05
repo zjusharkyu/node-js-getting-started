@@ -238,41 +238,40 @@ axios.defaults.headers['Content-Type'] =
 	        });
 	}
 
-	function getDict( c, pinyin, idiom ) {
-	    var $ = cheerio.load( pinyin.data );
-	    var exp = c+" : 部首[ ";
-	    exp +=  //$('a[href^="/z/pyjs/"]', '#z_info').text() + " " +  //拼音
-	            $('.z_it2_jbs', '#z_info').text() +"+"+$('.z_it2_jbh', '#z_info').text()
-	                    +"="+$('.z_it2_jzbh', '#z_info').text() + "画 ]";   //部首
-	    var notes = [], index = 0, curr="", next="";
-	    $('.tab-page','#jb').contents().each( function(i, el) {
-	                                if( 1 == i )
-	                                {
-	                                    curr = $(this).attr('class');
-	                                    next = 'zdct' + (parseInt( curr.substring(4) )+1)%10;   
-	                                    //console.log( curr+ " " + next);
-	                                }
-	                                if( i>1 && $(this).attr('class') == curr )
-	                                {
-	                                    if( $(this).text().indexOf("其它字义")==-1 &&
-	                                        $(this).text().indexOf("基本字义")==-1 &&
-	                                        $(this).text().indexOf("●")==-1) {
-	                                            notes[ index++ ] = $(this).text();
-	                                        }
-	                                }
-	                                else if( $(this).attr('class') == next )  {
-	                                    return false;
-	                                }
-	                            }) ;
-	    exp += "\n" + notes.join( '\n' ) ;
-	    exp += "\n详:http://www.zdic.net/sousuo/?tp=tp1&lb_a=hp&q="+c;
+    function getDict( c, pinyin, idiom ) {
+        var $ = cheerio.load( pinyin.data );
+        var exp = c+" : 部首[ ";
+        exp +=  //$('a[href^="/z/pyjs/"]', '#z_info').text() + " " +  //拼音
+                $('.z_it2_jbs', '#z_info').text() +"+"+$('.z_it2_jbh', '#z_info').text()
+                        +"="+$('.z_it2_jzbh', '#z_info').text() + "画 ]";   //部首
+        var notes = [], index = 0, curr="", next="";
+        $('.tab-page','#jb').contents().each( function(i, el) {
+                                    if( 1 == i )
+                                    {
+                                        curr = $(this).attr('class');
+                                        next = 'zdct' + (parseInt( curr.substring(4) )+1)%10;   
+                                        //console.log( curr+ " " + next);
+                                    }
+                                    if( i>1 && $(this).attr('class') == curr )
+                                    {
+                                        if( $(this).text().indexOf("其它字义")==-1 &&
+                                            $(this).text().indexOf("基本字义")==-1 &&
+                                            $(this).text().indexOf("●")==-1) {
+                                                notes[ index++ ] = $(this).text();
+                                            }
+                                    }
+                                    else if( $(this).attr('class') == next )  {
+                                        return false;
+                                    }
+                                }) ;
+        exp += "\n" + notes.join( '\n' ) ;
+        exp += "\n详:"+encodeURI( "http://www.zdic.net/sousuo/?tp=tp1&lb_a=hp&q="+c);
 
-	    $ = cheerio.load( idiom.data );
-	    exp += "\n成语："+$('a[href$=".htm#cy"]','#content').contents().not('span').slice(0,5).text();
-	    exp += "\n详:http://www.zdic.net/sousuo/?tp=tp4&lb_c=mh&q=?"+c+"?";
-	    return exp;    
-	}
-
+        $ = cheerio.load( idiom.data );
+        exp += "\n成语："+$('a[href$=".htm#cy"]','#content').contents().not('span').slice(0,5).text();
+        exp += "\n详:"+encodeURI( "http://www.zdic.net/sousuo/?tp=tp4&lb_c=mh&q=?"+c+"?");
+        return exp;    
+    }
 	function inputType( content )
 	{  
 		// 先判断是否是学号
