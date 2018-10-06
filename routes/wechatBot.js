@@ -289,7 +289,7 @@ function getWordDict( w, word )
     var exp = "";
 
     if( $('.notice','#content').contents().text().indexOf("汉典暂未收录")!=-1 ) {
-    	return helpText;
+        return "找不到该词，试试输入\'值日\'、\'倒计时\'、\'课程表\'、娃的学号 或者汉字、词组....";
     }
 
     exp +=  w + " " +$('img[src="/images/z_i_py.gif"]','#content').parent().text() ;   //拼音
@@ -333,7 +333,7 @@ function getWordDict( w, word )
         }
     }) ;
     exp += "\n" + notes.join( '\n' ) ;
-    exp += "\n详细:"+encodeURI( "http://www.zdic.net/sousuo/?tp=tp3&lb_b=mh&q="+w);
+    exp += "\n详细:"+encodeURI( "http://www.zdic.net/sousuo/?tp=tp1&q="+w);
 
     return exp;    
 }
@@ -365,7 +365,7 @@ function getDict( c, pinyin, idiom ) {
                                 }
                             }) ;
     exp += "\n" + notes.join( '\n' ) ;
-    exp += "\n详细:"+encodeURI( "http://www.zdic.net/sousuo/?tp=tp1&lb_a=hp&q="+c);
+    exp += "\n详细:"+encodeURI( "http://www.zdic.net/sousuo/?tp=tp1&q="+c);
 
     $ = cheerio.load( idiom.data );
     if( 0 != $('a[href$=".htm#cy"]','#content').contents().not('span').length ) {
@@ -376,19 +376,19 @@ function getDict( c, pinyin, idiom ) {
 }
 
 function strlen(str) 
-{	
-	var len = 0;	
-	for (var i=0; i<str.length; i++)  {	     
-		var c = str.charCodeAt(i);	     //单字节加1	     
-		if ((c >= 0x0001 && c <= 0x007e) || (0xff60<=c && c<=0xff9f)) {	       	   
-			len++;	     
-		}
-		else {	      	   
-			len+=2;	     
-		}	
-	}	
-	return len;
-}  
+{   
+    var len = 0;    
+    for (var i=0; i<str.length; i++)  {      
+        var c = str.charCodeAt(i);       //单字节加1         
+        if ((c >= 0x0001 && c <= 0x007e) || (0xff60<=c && c<=0xff9f)) {            
+            len++;       
+        }
+        else {             
+            len+=2;      
+        }   
+    }   
+    return len;
+}
 
 
 var router = require('express').Router();
