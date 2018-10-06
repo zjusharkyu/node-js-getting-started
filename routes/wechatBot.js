@@ -293,8 +293,8 @@ function getWordDict( w, word )
     }
 
     exp +=  w + " " +$('img[src="/images/z_i_py.gif"]','#content').parent().text() ;   //拼音
-    exp +=  "\n同义:"+ $('img[src="/images/c_i_tyc.gif"]','#content').parent().text(); //同义
-    exp +=  "\n反义:"+ $('img[src="/images/c_i_fyc.gif"]','#content').parent().text(); //反义
+    exp +=  "\n【同】:"+ $('img[src="/images/c_i_tyc.gif"]','#content').parent().text(); //同义
+    exp +=  "\n【反】:"+ $('img[src="/images/c_i_fyc.gif"]','#content').parent().text(); //反义
     
     var notes = [], index = 0, curr="", next="";
     
@@ -340,10 +340,10 @@ function getWordDict( w, word )
 
 function getDict( c, pinyin, idiom ) {
     var $ = cheerio.load( pinyin.data );
-    var exp = c+" : 部首[ ";
+    var exp = c+" : 【部首 ";
     exp +=  //$('a[href^="/z/pyjs/"]', '#z_info').text() + " " +  //拼音
             $('.z_it2_jbs', '#z_info').first().text() +"+"+$('.z_it2_jbh', '#z_info').first().text()
-                    +"="+$('.z_it2_jzbh', '#z_info').first().text() + "画 ]";   //部首
+                    +"="+$('.z_it2_jzbh', '#z_info').first().text() + "画 】";   //部首
     var notes = [], index = 0, curr="", next="";
     $('.tab-page','#jb').contents().each( function(i, el) {
                                 if( 1 == i )
@@ -369,7 +369,7 @@ function getDict( c, pinyin, idiom ) {
 
     $ = cheerio.load( idiom.data );
     if( 0 != $('a[href$=".htm#cy"]','#content').contents().not('span').length ) {
-        exp += "\n成语："+$('a[href$=".htm#cy"]','#content').contents().not('span').slice(0,5).text();
+        exp += "\n【成语】："+$('a[href$=".htm#cy"]','#content').contents().not('span').slice(0,5).text();
         exp += "\n更多:"+encodeURI( "http://www.zdic.net/sousuo/?tp=tp4&lb_c=mh&q=?"+c+"?");
     }
     return exp;    
@@ -416,7 +416,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
     var reply =  inputType( message.Content );
     if( reply == "" ) {
 	 //字
-         if (/^[\u4e00-\u9fa5]+$/.test(message.Content) && ( 2 == strlen(message.Content.length) ) )
+         if (/^[\u4e00-\u9fa5]+$/.test(message.Content) && ( 2 == strlen(message.Content) ) )
          {
              Promise.all([ getPinYin( message.Content ), getIdiom( message.Content ) ])
 		    .then( ([pinyin , idiom]) => {  
