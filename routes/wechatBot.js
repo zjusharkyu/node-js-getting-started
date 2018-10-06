@@ -416,7 +416,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
     var reply =  inputType( message.Content );
     if( replay == "" ) {
 	 //字
-         if (/^[\u4e00-\u9fa5]+$/.test(message.Content) && ( 2 == strlen(message.Content.length) ) 
+         if (/^[\u4e00-\u9fa5]+$/.test(message.Content) && ( 2 == strlen(message.Content.length) ) )
          {
              Promise.all([ getPinYin( message.Content ), getIdiom( message.Content ) ])
 		    .then( ([pinyin , idiom]) => {  
@@ -428,7 +428,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
          }
 	 // 词
 	 else {
-	     Promise.all( [getWord( p )] )
+	     Promise.all( [getWord( message.Content )] )
                     .then( ([word ]) => {  
                            res.reply({
                                 type: "text",
