@@ -4,6 +4,7 @@ const axios = require('axios');
 axios.defaults.baseURL = "http://www.zdic.net";
 axios.defaults.headers['Content-Type'] = 
     'application/x-www-form-urlencoded; charset=UTF-8';
+var helpText = "试试输入\'值日\'、\'倒计时\'、\'课程表\'、娃的学号 或者汉字、词组....";
 
     // 值日生标尺
 	baseDay   = new Date( '2018-09-25 00:00:00.000' );
@@ -205,73 +206,6 @@ axios.defaults.headers['Content-Type'] =
 		return todayText + nextdayText + getGuardText(today);
 	}
 
-	
-	function getPinYin( c )
-	{
-	    return axios( {
-	            method: 'post',
-	            url: 'http://www.zdic.net/sousuo/',
-	            headers: {
-	                'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8'
-	            },
-	            params: {
-	                tp: 'tp1',
-	                lb_a: 'hp',
-	                q:  c 
-	            } 
-	        });
-	}
-
-	function getIdiom( c )
-	{
-	    return axios( {
-	            method: 'post',
-	            url: 'http://www.zdic.net/sousuo/',
-	            headers: {
-	                'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8'
-	            },
-	            params: {
-	                tp: 'tp4',
-	                lb_c: 'mh',
-	                q:  '?'+c+'?'
-	            } 
-	        });
-	}
-
-    function getDict( c, pinyin, idiom ) {
-        var $ = cheerio.load( pinyin.data );
-        var exp = c+" : 部首[ ";
-        exp +=  //$('a[href^="/z/pyjs/"]', '#z_info').text() + " " +  //拼音
-                $('.z_it2_jbs', '#z_info').text() +"+"+$('.z_it2_jbh', '#z_info').text()
-                        +"="+$('.z_it2_jzbh', '#z_info').text() + "画 ]";   //部首
-        var notes = [], index = 0, curr="", next="";
-        $('.tab-page','#jb').contents().each( function(i, el) {
-                                    if( 1 == i )
-                                    {
-                                        curr = $(this).attr('class');
-                                        next = 'zdct' + (parseInt( curr.substring(4) )+1)%10;   
-                                        //console.log( curr+ " " + next);
-                                    }
-                                    if( i>1 && $(this).attr('class') == curr )
-                                    {
-                                        if( $(this).text().indexOf("其它字义")==-1 &&
-                                            $(this).text().indexOf("基本字义")==-1 &&
-                                            $(this).text().indexOf("●")==-1) {
-                                                notes[ index++ ] = $(this).text();
-                                            }
-                                    }
-                                    else if( $(this).attr('class') == next )  {
-                                        return false;
-                                    }
-                                }) ;
-        exp += "\n" + notes.join( '\n' ) ;
-        exp += "\n详:"+encodeURI( "http://www.zdic.net/sousuo/?tp=tp1&lb_a=hp&q="+c);
-
-        $ = cheerio.load( idiom.data );
-        exp += "\n成语："+$('a[href$=".htm#cy"]','#content').contents().not('span').slice(0,5).text();
-        exp += "\n详:"+encodeURI( "http://www.zdic.net/sousuo/?tp=tp4&lb_c=mh&q=?"+c+"?");
-        return exp;    
-    }
 	function inputType( content )
 	{  
 		// 先判断是否是学号
@@ -283,7 +217,7 @@ axios.defaults.headers['Content-Type'] =
 			}
 		}
 		// 再判断其他命令
-		var keyArray = ['值日生', '值日', '倒计时','课程表','课程'];
+		var keyArray = ['值日生', '值日', '倒计时','课程表','课程','帮助'];
   		var keyIndex = keyArray.indexOf(content);		
 		switch (keyIndex) {
 			case 0:
@@ -294,11 +228,167 @@ axios.defaults.headers['Content-Type'] =
         	case 3:
         	case 4:
         		return getClassText( new Date() );
-        	default:
-       			return '试试输入\'值日\'、\'倒计时\'、\'课程表\'、娃的学号 或者汉字....'
-      	       }			
+        	case 5:
+       			return helpText;
+       		default:
+       			return "";
+      	}			
 		
 	}
+
+function getPinYin( c )
+{
+    return axios( {
+            method: 'post',
+            url: 'http://www.zdic.net/sousuo/',
+            headers: {
+                'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8'
+            },
+            params: {
+                tp: 'tp1',
+                q:  c 
+            } 
+        });
+}
+
+function getIdiom( c )
+{
+    return axios( {
+            method: 'post',
+            url: 'http://www.zdic.net/sousuo/',
+            headers: {
+                'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8'
+            },
+            params: {
+                tp: 'tp4',
+                lb_c: 'mh',
+                q:  '?'+c+'?'
+            } 
+        });
+}
+
+
+function getWord( w )
+{
+    return axios( {
+            method: 'post',
+            url: 'http://www.zdic.net/sousuo/',
+            headers: {
+                'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8'
+            },
+            params: {
+                tp: 'tp1',
+                q:  w
+            } 
+        });
+}
+
+function getWordDict( w, word )
+ {
+    var $ = cheerio.load( word.data );
+    var exp = "";
+
+    if( $('.notice','#content').contents().text().indexOf("汉典暂未收录")!=-1 ) {
+    	return helpText;
+    }
+
+    exp +=  w + " " +$('img[src="/images/z_i_py.gif"]','#content').parent().text() ;   //拼音
+    exp +=  "\n同义:"+ $('img[src="/images/c_i_tyc.gif"]','#content').parent().text(); //同义
+    exp +=  "\n反义:"+ $('img[src="/images/c_i_fyc.gif"]','#content').parent().text(); //反义
+    
+    var notes = [], index = 0, curr="", next="";
+    
+    //console.log(  "with "+$('img[src="/images/z_i_py.gif"]','#content').parent().text()  );
+    //console.log(  "with "+$('img[src="/images/c_i_tyc.gif"]','#content').parent().text() );
+    //console.log(  "with "+$('img[src="/images/c_i_fyc.gif"]','#content').parent().text() );
+
+    //console.log(  "with p"+$('p','#cd').contents().text() );
+    //console.log(  "without"+$('p','#cd').not('.diczx4').contents().length );
+
+    $('#cd').contents().each( function(i, el) {
+        //console.log( i + $(this).text() + $(this) ); 
+        if( 7 == i )
+        {
+            curr = $(this).attr('class');
+            //console.log( "in 1 "+curr);
+
+            next = 'zdct' + (parseInt( curr.substring(4) )-1)%10;
+            //console.log( "in 1 "+next);
+        }
+        else if( i>7 && $(this).attr('class') == next )
+        {
+            if( $(this).text().indexOf("◎")==-1) {
+                if( $(this).contents().hasClass('diczx4') )
+                {
+                    notes[ index++ ] = "解释:"+$(this).contents().not('.diczx4').text();
+                }
+                else
+                {
+                    notes[ index++ ] = $(this).contents().text();   
+                }
+            }
+        }
+        else if( $(this).attr('class') == curr )  {
+            return false;
+        }
+    }) ;
+    exp += "\n" + notes.join( '\n' ) ;
+    exp += "\n详细:"+encodeURI( "http://www.zdic.net/sousuo/?tp=tp3&lb_b=mh&q="+w);
+
+    return exp;    
+}
+
+function getDict( c, pinyin, idiom ) {
+    var $ = cheerio.load( pinyin.data );
+    var exp = c+" : 部首[ ";
+    exp +=  //$('a[href^="/z/pyjs/"]', '#z_info').text() + " " +  //拼音
+            $('.z_it2_jbs', '#z_info').first().text() +"+"+$('.z_it2_jbh', '#z_info').first().text()
+                    +"="+$('.z_it2_jzbh', '#z_info').first().text() + "画 ]";   //部首
+    var notes = [], index = 0, curr="", next="";
+    $('.tab-page','#jb').contents().each( function(i, el) {
+                                if( 1 == i )
+                                {
+                                    curr = $(this).attr('class');
+                                    next = 'zdct' + (parseInt( curr.substring(4) )+1)%10;   
+                                    //console.log( curr+ " " + next);
+                                }
+                                if( i>1 && $(this).attr('class') == curr )
+                                {
+                                    if( $(this).text().indexOf("其它字义")==-1 &&
+                                        $(this).text().indexOf("基本字义")==-1 &&
+                                        $(this).text().indexOf("●")==-1) {
+                                            notes[ index++ ] = $(this).text();
+                                        }
+                                }
+                                else if( $(this).attr('class') == next )  {
+                                    return false;
+                                }
+                            }) ;
+    exp += "\n" + notes.join( '\n' ) ;
+    exp += "\n详细:"+encodeURI( "http://www.zdic.net/sousuo/?tp=tp1&lb_a=hp&q="+c);
+
+    $ = cheerio.load( idiom.data );
+    if( 0 != $('a[href$=".htm#cy"]','#content').contents().not('span').length ) {
+        exp += "\n成语："+$('a[href$=".htm#cy"]','#content').contents().not('span').slice(0,5).text();
+        exp += "\n更多:"+encodeURI( "http://www.zdic.net/sousuo/?tp=tp4&lb_c=mh&q=?"+c+"?");
+    }
+    return exp;    
+}
+
+function strlen(str) 
+{	
+	var len = 0;	
+	for (var i=0; i<str.length; i++)  {	     
+		var c = str.charCodeAt(i);	     //单字节加1	     
+		if ((c >= 0x0001 && c <= 0x007e) || (0xff60<=c && c<=0xff9f)) {	       	   
+			len++;	     
+		}
+		else {	      	   
+			len+=2;	     
+		}	
+	}	
+	return len;
+}  
 
 
 var router = require('express').Router();
@@ -323,20 +413,34 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
   // MsgType: 'text',
   // Content: 'http',
   // MsgId: '5837397576500011341' }
-    if (/^[\u4e00-\u9fa5]+$/.test(message.Content) && (1==message.Content.length) ) 
-    {
-         Promise.all([ getPinYin( message.Content ), getIdiom( message.Content ) ])
-		 .then( ([pinyin , idiom]) => {  
+    var reply =  inputType( message.Content );
+    if( replay == "" ) {
+	 //字
+         if (/^[\u4e00-\u9fa5]+$/.test(message.Content) && ( 2 == strlen(message.Content.length) ) 
+         {
+             Promise.all([ getPinYin( message.Content ), getIdiom( message.Content ) ])
+		    .then( ([pinyin , idiom]) => {  
                        res.reply({
                             type: "text",
                             content: getDict( message.Content, pinyin, idiom )
                        });
 	          });
+         }
+	 // 词
+	 else {
+	     Promise.all( [getWord( p )] )
+                    .then( ([word ]) => {  
+                           res.reply({
+                                type: "text",
+                                content: getWordDict( message.Content, word )
+    	                   });
+		     });
+	 }
     }
     else {
        res.reply({
           type: "text",
-          content: inputType( message.Content )
+          content: reply
        });
     }
 }).image(function(message, req, res, next) {
