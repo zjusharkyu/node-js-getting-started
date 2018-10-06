@@ -293,8 +293,8 @@ function getWordDict( w, word )
     }
 
     exp +=  w + " " +$('img[src="/images/z_i_py.gif"]','#content').parent().text() ;   //拼音
-    exp +=  "\n【同】:"+ $('img[src="/images/c_i_tyc.gif"]','#content').parent().text(); //同义
-    exp +=  "\n【反】:"+ $('img[src="/images/c_i_fyc.gif"]','#content').parent().text(); //反义
+    exp +=  "\n【同】"+ $('img[src="/images/c_i_tyc.gif"]','#content').parent().text(); //同义
+    exp +=  "\n【反】"+ $('img[src="/images/c_i_fyc.gif"]','#content').parent().text(); //反义
     
     var notes = [], index = 0, curr="", next="";
     
@@ -320,7 +320,7 @@ function getWordDict( w, word )
             if( $(this).text().indexOf("◎")==-1) {
                 if( $(this).contents().hasClass('diczx4') )
                 {
-                    notes[ index++ ] = "解释:"+$(this).contents().not('.diczx4').text();
+                    notes[ index++ ] = "【释】"+$(this).contents().not('.diczx4').text();
                 }
                 else
                 {
@@ -333,7 +333,7 @@ function getWordDict( w, word )
         }
     }) ;
     exp += "\n" + notes.join( '\n' ) ;
-    exp += "\n详细:"+encodeURI( "http://www.zdic.net/sousuo/?tp=tp1&q="+w);
+    exp += "\n【链】"+encodeURI( "http://www.zdic.net/sousuo/?tp=tp1&q="+w);
 
     return exp;    
 }
@@ -365,12 +365,12 @@ function getDict( c, pinyin, idiom ) {
                                 }
                             }) ;
     exp += "\n" + notes.join( '\n' ) ;
-    exp += "\n详细:"+encodeURI( "http://www.zdic.net/sousuo/?tp=tp1&q="+c);
+    exp += "\n【链】"+encodeURI( "http://www.zdic.net/sousuo/?tp=tp1&q="+c);
 
     $ = cheerio.load( idiom.data );
     if( 0 != $('a[href$=".htm#cy"]','#content').contents().not('span').length ) {
-        exp += "\n【成语】："+$('a[href$=".htm#cy"]','#content').contents().not('span').slice(0,5).text();
-        exp += "\n更多:"+encodeURI( "http://www.zdic.net/sousuo/?tp=tp4&lb_c=mh&q=?"+c+"?");
+        exp += "\n【成语】"+$('a[href$=".htm#cy"]','#content').contents().not('span').slice(0,5).text();
+        exp += "\n【链】"+encodeURI( "http://www.zdic.net/sousuo/?tp=tp4&lb_c=mh&q=?"+c+"?");
     }
     return exp;    
 }
