@@ -414,7 +414,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
   // Content: 'http',
   // MsgId: '5837397576500011341' }
     var reply =  inputType( message.Content );
-    if( replay == "" ) {
+    if( reply == "" ) {
 	 //字
          if (/^[\u4e00-\u9fa5]+$/.test(message.Content) && ( 2 == strlen(message.Content.length) ) )
          {
