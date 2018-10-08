@@ -5,7 +5,7 @@ var solve24game = require('./24game');
 axios.defaults.baseURL = "http://www.zdic.net";
 axios.defaults.headers['Content-Type'] = 
     'application/x-www-form-urlencoded; charset=UTF-8';
-var helpText = "试试输入\'值日\'、\'倒计时\'、\'课程表\'、娃的学号 或者汉字、词组....";
+var helpText = "试试输入\'值日\'、\'倒计时\'、\'课程表\'、娃的学号、汉字、词组、4个算24点的数....";
 
     // 值日生标尺
 	baseDay   = new Date( '2018-09-25 00:00:00.000' );
