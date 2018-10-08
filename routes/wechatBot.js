@@ -1,5 +1,6 @@
 const cheerio = require('cheerio');
 const axios = require('axios');
+var solve24game = require('./24game');
 
 axios.defaults.baseURL = "http://www.zdic.net";
 axios.defaults.headers['Content-Type'] = 
@@ -208,8 +209,16 @@ var helpText = "试试输入\'值日\'、\'倒计时\'、\'课程表\'、娃的�
 
 	function inputType( content )
 	{  
-		// 先判断是否是学号
-		if( new RegExp("^[0-9]*[1-9][0-9]*$").test( content ) )
+		// 先判断是否是4个数字
+		var clist = content.split(" ");
+                if ( 4 == clist.length  && clist.map( function (item) {
+                                             return new RegExp("^[0-9]*[1-9][0-9]*$").test( item );
+                                           }).toString() == [ true, true, true, true].toString() ) 
+                {  
+                    return solve24game( clist[0], clist[1], clist[2], clist[3] ); 
+                }
+		// 再判断是否是学号
+		else if( new RegExp("^[0-9]*[1-9][0-9]*$").test( content ) )
 		{
 			if( Number(content)<=42 ) //输入的学号
 			{
@@ -288,7 +297,7 @@ function getWordDict( w, word )
     var $ = cheerio.load( word.data );
     var exp = "";
 
-    if( $('.notice','#content').contents().text().indexOf("汉典暂未收录")!=-1 ) {
+    if( $('.notice','#content').contents().text().indexOf("搜索结果")!=-1 ) {
         return "找不到该词，试试输入\'值日\'、\'倒计时\'、\'课程表\'、娃的学号 或者汉字、词组....";
     }
 
