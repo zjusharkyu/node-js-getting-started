@@ -111,7 +111,7 @@ var helpText = "试试输入\'值日\'、\'倒计时\'、\'课程表\'、娃的�
 
 		//console.log( currday ); 
 
-		return guardText = "\n下次护校："
+		return guardText = "下次护校："
 						+ (currday.getMonth()+1) + "月" + currday.getDate() + "日 "
 						+ "(" + ((baseGuard+count)%nameList.length+1)
 						+ nameList[ (baseGuard+count)%nameList.length ] + ")";			
@@ -188,7 +188,8 @@ var helpText = "试试输入\'值日\'、\'倒计时\'、\'课程表\'、娃的�
 									+ nameList[ (baseDuty+diff*4)%nameList.length ]
 									+ ","	+ nameList[ (baseDuty+diff*4+1)%nameList.length ]
 									+ ","	+ nameList[ (baseDuty+diff*4+2)%nameList.length ]
-									+ ","	+ nameList[ (baseDuty+diff*4+3)%nameList.length ] 
+									+ ","	+ nameList[ (baseDuty+diff*4+3)%nameList.length ]
+		                                                        + "\n"
 									: "";
 
 		var nextday = today;
@@ -197,13 +198,14 @@ var helpText = "试试输入\'值日\'、\'倒计时\'、\'课程表\'、娃的�
 		}while( !isWorkday( nextday ) ) 
 
 		var diff = diffworkday( nextday );
-		var nextdayText =  (isWorkday( new Date( today.getTime()+ONEDAY) )?"\n次日：":"下周：")
+		var nextdayText =  (isWorkday( new Date( today.getTime()+ONEDAY) )?"次日：":"下周：")
 						+ ((baseDuty+diff*4)%nameList.length+1) + "~"
 						+ ((baseDuty+diff*4+3)%nameList.length+1) + " "		
 						+ nameList[ (baseDuty+diff*4)%nameList.length ]
 						+ ","	+ nameList[ (baseDuty+diff*4+1)%nameList.length ]
 						+ ","	+ nameList[ (baseDuty+diff*4+2)%nameList.length ]
-						+ ","	+ nameList[ (baseDuty+diff*4+3)%nameList.length ];
+						+ ","	+ nameList[ (baseDuty+diff*4+3)%nameList.length ]
+		                                + "\n";
 		return todayText + nextdayText + getGuardText(today);
 	}
 
