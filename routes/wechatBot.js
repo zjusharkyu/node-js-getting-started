@@ -216,7 +216,7 @@ var helpText = "试试输入\'值日\'、\'倒计时\'、\'课程表\'、娃的�
                                            }).toString() == [ true, true, true, true].toString() ) 
                 {  
                     var result = solve24game( clist[0], clist[1], clist[2], clist[3] ); 
-		    return (result==""?): "竟然算不出来！！": result;
+		    return (result==""?) "竟然算不出来！！": result;
                 }
 		// 再判断是否是学号
 		else if( new RegExp("^[0-9]*[1-9][0-9]*$").test( content ) )
