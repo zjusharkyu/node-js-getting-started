@@ -197,7 +197,7 @@ var helpText = "试试输入\'值日\'、\'倒计时\'、\'课程表\'、娃的�
 		}while( !isWorkday( nextday ) ) 
 
 		var diff = diffworkday( nextday );
-		var nextdayText =  (isWorkday(today)?"\n次日：":"下周：")
+		var nextdayText =  (isWorkday( new Date( today.getTime()+ONEDAY) )?"\n次日：":"下周：")
 						+ ((baseDuty+diff*4)%nameList.length+1) + "~"
 						+ ((baseDuty+diff*4+3)%nameList.length+1) + " "		
 						+ nameList[ (baseDuty+diff*4)%nameList.length ]
