@@ -29,7 +29,6 @@ function parse( req, rsp  ) {
     switch( $('body').attr('id') ) {
         case "pc--body":
             $('.poem-list-item','#data-container').each( function(i, el)  {
-                
                 temp = $(el).children('div[style^=display]').text().trim() ;
                 temp==""? temp=$(el).children('a[href^="/s"]').text().trim() : temp;
                 
@@ -43,6 +42,7 @@ function parse( req, rsp  ) {
                         text += $(ele).text().trim() ;
                     });
                 text += "\n" ;
+                if( i>3 ) return false;
             });
             break;
         case "pc-term-body":
