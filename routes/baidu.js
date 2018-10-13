@@ -2,6 +2,8 @@
 const cheerio = require('cheerio');
 const axios = require('axios');
 
+var helpText = "试试输入\'值日\'、\'倒计时\'、\'课程表\'、娃的学号、汉字、词组、4个算24点的数....";
+
 function post(data) {
         return axios({
             method: 'post',
@@ -18,11 +20,11 @@ function post(data) {
 function parse( req, rsp  ) {
     var text = "", temp = "";
     if( undefined == rsp )
-        return "";
+        return helpText;
    
     const $ = cheerio.load( rsp.data );
     if( $("#empty-tips").length > 0  )
-        return "";
+        return helpText;
 
     switch( $('body').attr('id') ) {
         case "pc--body":
@@ -79,10 +81,12 @@ function parse( req, rsp  ) {
 
             break;    
         default:
-            text = "抱歉，没有收录该输入";
+            text = "";
     } 
     if( text != "" )
         text += "【链】 "+encodeURI("https://hanyu.baidu.com/s?wd="+req);
+    else
+        text = helpText;
     return text;
 }
 
