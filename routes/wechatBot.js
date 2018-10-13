@@ -208,7 +208,7 @@ var helpText = "试试输入\'值日\'、\'倒计时\'、\'课程表\'、娃的�
 	function inputType( content )
 	{  
 		// 先判断是否是4个数字
-		var clist = content.split(" ");
+		var clist = content.split( /[ `!@#$%&*()-+_=|:;"',.?<>，。？！”“：；]/);
                 if ( 4 == clist.length  && clist.map( function (item) {
                                              return new RegExp("^[0-9]*[1-9][0-9]*$").test( item );
                                            }).toString() == [ true, true, true, true].toString() ) 
