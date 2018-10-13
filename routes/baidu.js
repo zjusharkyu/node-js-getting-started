@@ -48,7 +48,7 @@ function parse( req, rsp  ) {
         case "pc-term-body":
         case "pc-word-body":
             //console.log( rsp.data );
-            text += $('.baike-feedback','#baike-wrapper').attr('data');
+            text += $('.baike-feedback','#baike-wrapper').attr('data')+" ";
             text += (temp=$('span','#radical').text())!=""?
                         $('b','#pinyin').text() + " 【部首:"+ temp + "+" 
                         + $('span','#stroke_count').text()+"画】": "" ;
