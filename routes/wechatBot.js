@@ -4,9 +4,9 @@ const solve24game = require('./24game');
 var helpText = "试试输入\'值日\'、\'倒计时\'、\'课程表\'、娃的学号、汉字、词组、4个算24点的数....";
 
     // 值日生标尺
-	baseDay   = new Date( '2018-09-25 00:00:00.000' );
-	baseDuty  = 7-1;
-	baseGuard = 26-1;
+	baseDay   = new Date( '2018-12-24 00:00:00.000' );
+	baseDuty  = 40-1;
+	baseGuard = 39-1;
 
 	// 2018年上半学期
 	firstDay = new Date( '2018-09-03 00:00:01.000' );
