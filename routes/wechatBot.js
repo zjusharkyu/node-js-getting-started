@@ -1,7 +1,7 @@
 const baidu = require('./baidu');
 const solve24game = require('./24game');
 
-var helpText = "试试输入\'值日\'、\'倒计时\'、\'课程表\'、娃的学号、汉字、词组、4个算24点的数....";
+var helpText = "试试输入\'书\'、\'值日\'、\'倒计时\'、\'课程表\'、娃的学号、汉字、词组、4个算24点的数....";
 var bookLink = "https://docs.qq.com/sheet/DTXphbHBpc3FFbGdF";
 
     // 值日生标尺
