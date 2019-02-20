@@ -9,9 +9,9 @@ var bookLink = "https://docs.qq.com/sheet/DTXphbHBpc3FFbGdF";
 	baseDuty  = 36-1;   //当日值日的首位同学学号
 	baseGuard = 38-1;   //没到周二，算上周护校的家长，到周二，算本周的
 
-	// 2018年上半学期
-	firstDay = new Date( '2018-09-03 00:00:01.000' );
-	lastDay  = new Date( '2019-01-18 00:00:01.000' );	
+	// 2019年下半学期
+	firstDay = new Date( '2019-02-30 00:00:01.000' );
+	lastDay  = new Date( '2019-06-30 00:00:01.000' );	
 	
 	ONEDAY = 1000*24*60*60;
 
