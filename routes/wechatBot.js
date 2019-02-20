@@ -2,6 +2,7 @@ const baidu = require('./baidu');
 const solve24game = require('./24game');
 
 var helpText = "试试输入\'值日\'、\'倒计时\'、\'课程表\'、娃的学号、汉字、词组、4个算24点的数....";
+var bookLink = "https://docs.qq.com/sheet/DTXphbHBpc3FFbGdF";
 
     // 值日生标尺
 	baseDay   = new Date( '2018-12-24 00:00:00.000' );
@@ -228,7 +229,7 @@ var helpText = "试试输入\'值日\'、\'倒计时\'、\'课程表\'、娃的�
 			}
 		}
 		// 再判断其他命令
-		var keyArray = ['值日生', '值日', '倒计时','课程表','课程','帮助'];
+		var keyArray = ['值日生', '值日', '倒计时','课程表','课程','帮助','书'];
   		var keyIndex = keyArray.indexOf(content);		
 		switch (keyIndex) {
 			case 0:
@@ -241,6 +242,8 @@ var helpText = "试试输入\'值日\'、\'倒计时\'、\'课程表\'、娃的�
         		return getClassText( new Date() );
         	case 5:
        			return helpText;
+		case 6:
+			return bookLink;
        		default:
        			return "";
       	}			
