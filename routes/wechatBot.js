@@ -147,7 +147,7 @@ var bookLink = "https://docs.qq.com/sheet/DTXphbHBpc3FFbGdF";
 						+ pastCnt + "周(" + (pastCnt/totalCnt*100) + "%)，"
 						+ "再坚持" + (totalCnt-pastCnt) + "周("
 						+ (totalCnt-pastCnt)/totalCnt*100 
-						+ "%)到"+ new Date( lastDay ) + "就放假了喽！";			
+						+ "%)到"+ (new Date( lastDay )).isoformat() + "就放假了喽！";			
 	}
 
 	function nextDuty( id, today )
