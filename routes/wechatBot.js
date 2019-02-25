@@ -142,12 +142,14 @@ var bookLink = "https://docs.qq.com/sheet/DTXphbHBpc3FFbGdF";
 				pastCnt++;
 			}
 		}while( currday <= lastDay );
+		
+		p1 = "{:.1f}".format( pastCnt/totalCnt*100 );
+		p2 = "{:.1f}".format( (totalCnt-pastCnt)/totalCnt*100 );
 
 		return  "本学期共有" + totalCnt+ "周，已过了"
-						+ pastCnt + "周(" + format(pastCnt/totalCnt*100,'0.1f') + "%)，"
+						+ pastCnt + "周(" + p1 + "%)，"
 						+ "再坚持" + (totalCnt-pastCnt) + "周("
-						+ format( (totalCnt-pastCnt)/totalCnt*100, '0.1f') 
-						+ "%)就放假了喽！";			
+						+ p2 + "%)就放假了喽！";			
 	}
 
 	function nextDuty( id, today )
