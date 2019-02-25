@@ -144,9 +144,9 @@ var bookLink = "https://docs.qq.com/sheet/DTXphbHBpc3FFbGdF";
 		}while( currday <= lastDay );
 
 		return  "本学期共有" + totalCnt+ "周，已过了"
-						+ pastCnt + "周(" + '%d'%(pastCnt/totalCnt*100) + "%)，"
+						+ pastCnt + "周(" + format(pastCnt/totalCnt*100,'0.1f') + "%)，"
 						+ "再坚持" + (totalCnt-pastCnt) + "周("
-						+ '%d'%((totalCnt-pastCnt)/totalCnt*100) 
+						+ format( (totalCnt-pastCnt)/totalCnt*100, '0.1f') 
 						+ "%)就放假了喽！";			
 	}
 
