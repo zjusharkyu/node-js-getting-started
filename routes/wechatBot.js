@@ -10,7 +10,7 @@ var bookLink = "https://docs.qq.com/sheet/DTXphbHBpc3FFbGdF";
 	baseGuard = 41-1;   //没到周二，算上周护校的家长，到周二，算本周的
 
 	// 2019年下半学期
-	firstDay = new Date( '2019-02-30 00:00:01.000' );
+	firstDay = new Date( '2019-02-18 00:00:01.000' );
 	lastDay  = new Date( '2019-06-30 00:00:01.000' );	
 	
 	ONEDAY = 1000*24*60*60;
