@@ -143,8 +143,8 @@ var bookLink = "https://docs.qq.com/sheet/DTXphbHBpc3FFbGdF";
 			}
 		}while( currday <= lastDay );
 		
-		var p1 = '%.1f' % ( pastCnt/totalCnt*100 );
-		var p2 = '%.1f' % ((totalCnt-pastCnt)/totalCnt*100 );
+		var p1 = ( pastCnt/totalCnt*100 ).toFixed(1);
+		var p2 = ((totalCnt-pastCnt)/totalCnt*100 ).toFixed(1);
 
 		return  "本学期共有" + totalCnt+ "周，已过了"
 						+ pastCnt + "周(" + p1 + "%)，"
