@@ -47,6 +47,7 @@ function parse( req, rsp  ) {
             break;
         case "pc-term-body":
         case "pc-word-body":
+        case "pc-idiom-body":
             //console.log( rsp.data );
             text += $('.baike-feedback','#baike-wrapper').attr('data')+" ";
             text += (temp=$('span','#radical').text())!=""?
