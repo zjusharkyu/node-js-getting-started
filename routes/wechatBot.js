@@ -5,9 +5,9 @@ var helpText = "试试输入\'书\'、\'值日\'、\'倒计时\'、\'课程表\'
 var bookLink = "https://docs.qq.com/sheet/DTXphbHBpc3FFbGdF";
 
     // 值日生标尺
-	baseDay   = new Date( '2019-3-7 00:00:00.000' );
-	baseDuty  = 39-1;   //当日值日的首位同学学号
-	baseGuard = 2-1;   //没到周二，算上周护校的家长，到周二，算本周的
+	baseDay   = new Date( '2019-3-5 00:00:00.000' );
+	baseDuty  = 31-1;   //当日值日的首位同学学号
+	baseGuard = 1-1;   //没到周二，算上周护校的家长，到周二，算本周的
 
 	// 2019年下半学期
 	firstDay = new Date( '2019-02-18 00:00:01.000' );
