@@ -6,7 +6,7 @@ var bookLink = "https://docs.qq.com/sheet/DTXphbHBpc3FFbGdF";
 
     // 值日生标尺
 	baseDay   = new Date( '2019-09-04 00:00:00.000' );
-	baseDuty  = 7-1;   //当日值日的首位同学学号
+	baseDuty  = 9-1;   //当日值日的首位同学学号
 	baseGuard = 18-1;   //没到周三，算上周护校的家长，到周二，算本周的
 
 	// 2019年下半学期
